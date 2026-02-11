@@ -7,7 +7,7 @@ def add_virtual_column(df: pd.DataFrame, role: str, new_column: str) -> pd.DataF
     with an additional column calculated based on specified operations.
     """
     
-    df = df.copy()
+    df_result = df.copy()
 
     #Validation to check column labels consist only of letters and underscore
     all_columns = list(df.columns) + [new_column]
@@ -19,27 +19,15 @@ def add_virtual_column(df: pd.DataFrame, role: str, new_column: str) -> pd.DataF
 
     #Validation to check that function supports provided operations
 
-    avaiables_roles = ["+","-","*"]
+    available_roles = ["+","-","*"]
 
-
-    if any(op in role for op in avaiables_roles):
-        try:
-            df[new_column] = df.eval(role)
-            return df
-        except Exception as e:
-            print(f"Bad computing: {e}")
-            return pd.DataFrame()
-    else:
-        print("Inncorect operator")
+    if not any(op in role for op in available_roles):
         return pd.DataFrame()
-    
 
-#TEST
+    #Calculations 
 
-df_input = pd.DataFrame({'A': [10,20], 'B': [30,40]})
-
-result = add_virtual_column(df_input, "A + B", "C-minor")
-print(result)
-
-
-
+    try:
+        df_result[new_column] = df_result.eval(role)
+        return df_result
+    except Exception:
+        return pd.DataFrame()
